@@ -1,0 +1,12 @@
+# Dependencies
+node_modules
+
+# Development
+tmp/*
+
+# Environment
+.env
+.env.test
+
+# Build
+build
