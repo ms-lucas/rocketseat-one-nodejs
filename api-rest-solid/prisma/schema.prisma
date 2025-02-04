@@ -6,3 +6,48 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         Role     @default(MEMBER)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  checkIn CheckIn[]
+
+  @@map("users")
+}
+
+model CheckIn {
+  id          String    @id @default(uuid())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  validatedAt DateTime? @map("validated_at")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  gymId String @map("gym_id")
+  gym   Gym    @relation(fields: [gymId], references: [id])
+
+  @@map("check_ins")
+}
+
+model Gym {
+  id          String  @id @default(uuid())
+  title       String
+  description String?
+  phone       String?
+  latitude    Decimal
+  longitude   Decimal
+
+  checkIns CheckIn[]
+
+  @@map("gyms")
+}
